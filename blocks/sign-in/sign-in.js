@@ -232,7 +232,7 @@ function attachSignInHandler(block) {
         })
       );
 
-      sessionStorage.setItem(
+      localStorage.setItem(
         "com.adobe.reactor.dataElements.Identity Map",
         JSON.stringify({
           Email: [
