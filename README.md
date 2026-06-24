@@ -20,8 +20,8 @@ This project supports the **migration of all DSN Public projects to Edge Deliver
   - Template contains placeholder blocks with various styling options
 
 ## Environments
-- Preview: http://main--refdemoeds--aemxsc.aem.page/
-- Live: http://main--refdemoeds--aemxsc.aem.live/
+Preview: https://main--as-industrytemplates--ankitasingh-cloud.aem.page/
+Live: https://main--as-industrytemplates--ankitasingh-cloud.aem.live/
 
 ## Documentation
 [Ref Demo 2.0](https://adobe.com/go/refdemo) 
