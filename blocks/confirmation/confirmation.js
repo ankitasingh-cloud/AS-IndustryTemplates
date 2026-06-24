@@ -1,6 +1,6 @@
 /**
  * Confirmation block – shows Electronic Ticket booked after checkout.
- * Data is stored in sessionStorage (project_booking_confirmation) when user clicks Confirm Purchase.
+ * Data is stored in localStorage (project_booking_confirmation) when user clicks Confirm Purchase.
  */
 
 const BOOKING_STORAGE_KEY = 'project_booking_confirmation';
@@ -8,7 +8,7 @@ const TRIP_STORAGE_KEY = 'project_selected_flights';
 
 function getBookingData() {
   try {
-    const raw = sessionStorage.getItem(BOOKING_STORAGE_KEY);
+    const raw = localStorage.getItem(BOOKING_STORAGE_KEY);
     return raw ? JSON.parse(raw) : null;
   } catch {
     return null;
@@ -87,6 +87,6 @@ export default async function decorate(block) {
   const data = getBookingData();
   renderConfirmation(block, data);
   localStorage.removeItem(TRIP_STORAGE_KEY);
-  sessionStorage.removeItem(BOOKING_STORAGE_KEY);
+  localStorage.removeItem(BOOKING_STORAGE_KEY);
   resetCartFromDataLayer();
 }

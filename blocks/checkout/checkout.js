@@ -6,7 +6,7 @@ import { fetchButtonDataSheet } from '../../scripts/form-data-layer.js';
  * Checkout block – consolidates selected flights from the flights block and shows Trip Summary.
  * Selected flights are stored in localStorage (project_selected_flights) when user clicks Select on any flight.
  * Book Now on the flights block redirects to the checkout page where this block is authored.
- * Confirm Purchase saves booking to sessionStorage and redirects to the confirmation page.
+ * Confirm Purchase saves booking to localStorage and redirects to the confirmation page.
  */
 
 const TRIP_STORAGE_KEY = 'project_selected_flights';
@@ -376,7 +376,7 @@ function renderTripTotal(sidebar, total, config) {
         formData,
       };
       try {
-        sessionStorage.setItem(BOOKING_STORAGE_KEY, JSON.stringify(bookingData));
+        localStorage.setItem(BOOKING_STORAGE_KEY, JSON.stringify(bookingData));
         // So Launch "Profile - Email from Storage" and Identity Map resolve when Confirm Purchase rule runs
         if (formData.email) {
           localStorage.setItem("com.adobe.reactor.dataElements.Profile - Email", formData.email);
@@ -397,7 +397,7 @@ function renderTripTotal(sidebar, total, config) {
             })
           );
 
-          sessionStorage.setItem(
+          localStorage.setItem(
             "com.adobe.reactor.dataElements.Identity Map",
             JSON.stringify({
               Email: [
@@ -412,7 +412,7 @@ function renderTripTotal(sidebar, total, config) {
         }
       } catch (e) {
         // eslint-disable-next-line no-console
-        console.warn('Could not save booking to sessionStorage', e);
+        console.warn('Could not save booking to localStorage', e);
       }
       let orderId;
       if (typeof window.updateDataLayer === 'function') {
