@@ -83,8 +83,5 @@
       "title",
       "video"
     ]
-  },
-  {
-    "...": "../blocks/*/_*.json#/filters"
   }
 ]

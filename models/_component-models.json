@@ -1367,8 +1367,5 @@
         "description": "Space-separated class names to add to the block"
       }
     ]
-  },
-  {
-    "...": "../blocks/*/_*.json#/models"
   }
 ]
