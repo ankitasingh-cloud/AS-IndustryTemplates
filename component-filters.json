@@ -33,7 +33,6 @@
       "forex",
       "embed-adaptive-form",
       "find-a-doctor",
-      "fragment-list",
       "flight-search",
       "flights",
       "create-account",
@@ -63,7 +62,8 @@
       "order-summary",
       "product-detail",
       "product-card",
-      "build-your-own"
+      "build-your-own",
+      "fragment-list"
     ]
   },
   {
