@@ -49,6 +49,10 @@ function getUniqueTags(cards) {
   return Array.from(tags).sort();
 }
 
+function getCtaVariant(layout) {
+  return layout === 'articles' ? 'cta-button-secondary' : 'cta-button';
+}
+
 // --- Data Fetching ---
 
 /**
@@ -308,7 +312,7 @@ function createFragmentCard(card, config) {
   }
 
   // Tags
-  if (card.tags && card.tags.length > 0) {
+  if (config.showTags && card.tags && card.tags.length > 0) {
     html += '<div class="fragment-card-tags">';
     card.tags.forEach((tag) => {
       html += `<span class="fragment-card-tag">${tag}</span>`;
@@ -318,10 +322,11 @@ function createFragmentCard(card, config) {
 
   // CTA Button
   const ctaLabel = card.ctaText || config.ctaButtonLabel || 'Learn More';
+  const ctaVariant = getCtaVariant(config.layout);
   if (card.ctaLink) {
-    html += `<a href="${card.ctaLink}" class="fragment-card-cta" target="_blank" rel="noopener noreferrer">${ctaLabel}</a>`;
+    html += `<p class="button-container ${ctaVariant}"><a href="${card.ctaLink}" class="button" target="_blank" rel="noopener noreferrer">${ctaLabel}</a></p>`;
   } else {
-    html += `<span class="fragment-card-cta">${ctaLabel}</span>`;
+    html += `<p class="button-container ${ctaVariant} fragment-card-cta-static"><span class="button">${ctaLabel}</span></p>`;
   }
 
   html += '</div>';
@@ -457,6 +462,7 @@ export default async function decorate(block) {
   let enableTextSearch = true;
   let enableTagFilter = true;
   let searchPlaceholder = 'Search...';
+  let showTags = false;
   let ctaButtonLabel = 'Learn More';
   let noResultsMessage = 'No items found';
   let customClass = '';
@@ -494,6 +500,8 @@ export default async function decorate(block) {
       case 'enabletagfilter': enableTagFilter = value !== 'false'; break;
       case 'search placeholder':
       case 'searchplaceholder': searchPlaceholder = value; break;
+      case 'show tags':
+      case 'showtags': showTags = value === 'true'; break;
       case 'cta button label':
       case 'ctabuttonlabel': ctaButtonLabel = value; break;
       case 'no results message':
@@ -527,6 +535,7 @@ export default async function decorate(block) {
     enableTextSearch,
     enableTagFilter,
     searchPlaceholder,
+    showTags,
     ctaButtonLabel,
     noResultsMessage,
   };
