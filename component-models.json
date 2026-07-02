@@ -1287,6 +1287,10 @@
           {
             "name": "Carousel",
             "value": "carousel"
+          },
+          {
+            "name": "Articles",
+            "value": "articles"
           }
         ]
       },
@@ -1408,6 +1412,22 @@
               "var": "enableFilters"
             },
             true
+          ]
+        }
+      },
+      {
+        "component": "boolean",
+        "name": "showTags",
+        "label": "Show Tags",
+        "description": "Show content fragment tags on each card",
+        "value": false,
+        "valueType": "boolean",
+        "condition": {
+          "==": [
+            {
+              "var": "dataSourceType"
+            },
+            "content-fragments"
           ]
         }
       },

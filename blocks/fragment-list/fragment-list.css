@@ -142,25 +142,23 @@
   border: 1px solid var(--border-color, #e0e0e0);
 }
 
-/* CTA Button */
-.fragment-card-cta {
-  display: inline-block;
-  width: 100%;
-  padding: 0.75rem;
-  background: var(--button-primary-color, #007bff);
-  color: white;
-  border: none;
-  border-radius: 8px;
-  font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
-  text-align: center;
-  text-decoration: none;
-  transition: background-color 0.3s ease;
+/* CTA Buttons (theme-based) */
+.fragment-card .button-container {
+  margin: 0;
 }
 
-.fragment-card-cta:hover {
-  background: var(--button-primary-hover-color, #0056b3);
+.fragment-card .button-container a.button {
+  margin: 0;
+}
+
+.fragment-card-cta-static .button {
+  display: inline-block;
+  padding: 12px 24px;
+  border-radius: 4px;
+  border: 2px solid var(--border-color, #ddd);
+  color: var(--text-color-secondary, #666);
+  background: var(--background-color, #fff);
+  cursor: default;
 }
 
 /* No Results */
@@ -224,8 +222,7 @@
   margin-bottom: 0.25rem;
 }
 
-.fragment-list.list .fragment-card-cta {
-  width: auto;
+.fragment-list.list .fragment-card .button-container {
   align-self: flex-start;
   margin-top: auto;
 }
@@ -259,9 +256,68 @@
   overflow: hidden;
 }
 
-.fragment-list.compact .fragment-card-cta {
-  padding: 0.5rem;
+.fragment-list.compact .fragment-card .button-container a.button {
+  padding: 8px 14px !important;
   font-size: 0.9rem;
+}
+
+/* ===== Layout: Articles ===== */
+.fragment-list.articles .fragment-list-results {
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 1.75rem;
+}
+
+.fragment-list.articles .fragment-card {
+  border-radius: 0;
+  background: #efefef;
+  box-shadow: none;
+  display: flex;
+  flex-direction: column;
+}
+
+.fragment-list.articles .fragment-card:hover {
+  transform: none;
+  box-shadow: none;
+}
+
+.fragment-list.articles .fragment-card-image {
+  height: 280px;
+}
+
+.fragment-list.articles .fragment-card-content {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  padding: 2rem 2.25rem 2.5rem;
+}
+
+.fragment-list.articles .fragment-card-title {
+  color: var(--main-accent-color, #c2410c);
+  font-size: 2.85rem;
+  font-weight: 300;
+  line-height: 1.14;
+  margin-bottom: 1rem;
+}
+
+.fragment-list.articles .fragment-card-subtext {
+  font-size: 2rem;
+  line-height: 1.45;
+  color: var(--text-color-secondary, #5a5a5a);
+  margin-bottom: 2.5rem;
+}
+
+.fragment-list.articles .fragment-card .button-container {
+  margin-top: auto;
+  align-self: flex-end;
+}
+
+.fragment-list.articles .fragment-card .button-container a.button {
+  font-size: 2rem;
+  font-weight: 400;
+}
+
+.fragment-list.articles .fragment-card .button-container a.button::after {
+  font-size: 2rem;
 }
 
 /* ===== Layout: Masonry ===== */
@@ -396,6 +452,31 @@
   /* Carousel keeps horizontal scroll */
   .fragment-list.carousel .fragment-card {
     flex: 0 0 260px;
+  }
+
+  .fragment-list.articles .fragment-card-image {
+    height: 220px;
+  }
+
+  .fragment-list.articles .fragment-card-content {
+    padding: 1.5rem;
+  }
+
+  .fragment-list.articles .fragment-card-title {
+    font-size: 2rem;
+  }
+
+  .fragment-list.articles .fragment-card-subtext {
+    font-size: 1.2rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .fragment-list.articles .fragment-card .button-container a.button {
+    font-size: 1rem;
+  }
+
+  .fragment-list.articles .fragment-card .button-container a.button::after {
+    font-size: 1rem;
   }
 }
 
