@@ -139,20 +139,20 @@ async function fetchViaGraphQL(folderPath) {
 
     const requestConfig = isAuthor
       ? {
-          url: `${aemauthorurl}${GRAPHQL_QUERY_PATH};path=${decodedFolderPath};ts=${Date.now()}`,
-          method: 'GET',
-          headers: { 'Content-Type': 'application/json' },
-        }
+        url: `${aemauthorurl}${GRAPHQL_QUERY_PATH};path=${decodedFolderPath};ts=${Date.now()}`,
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' },
+      }
       : {
-          url: CONFIG.WRAPPER_SERVICE_URL,
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            graphQLPath: `${aempublishurl}${GRAPHQL_QUERY_PATH}`,
-            cfPath: decodedFolderPath,
-            variation: `main;ts=${Date.now()}`,
-          }),
-        };
+        url: CONFIG.WRAPPER_SERVICE_URL,
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          graphQLPath: `${aempublishurl}${GRAPHQL_QUERY_PATH}`,
+          cfPath: decodedFolderPath,
+          variation: `main;ts=${Date.now()}`,
+        }),
+      };
 
     const response = await fetch(requestConfig.url, {
       method: requestConfig.method,
@@ -193,7 +193,9 @@ async function fetchFromExternalAPI(apiUrl) {
  * Orchestrator: decides which fetch method to use based on config
  */
 async function fetchFragmentData(config) {
-  const { dataSourceType, contentFragmentFolder, apiUrl, modelName } = config;
+  const {
+    dataSourceType, contentFragmentFolder, apiUrl, modelName,
+  } = config;
 
   if (dataSourceType === 'api') {
     if (!apiUrl) {
@@ -470,7 +472,7 @@ export default async function decorate(block) {
   let enableTagFilter = true;
   let searchPlaceholder = 'Search...';
   let showTags = false;
-  let ctaButtonLabel = 'Learn More';
+  let ctaButtonLabel = 'Learn More....';
   let ctaStyle = '';
   let noResultsMessage = 'No items found';
   let customClass = '';
