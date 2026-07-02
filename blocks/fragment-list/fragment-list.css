@@ -151,6 +151,76 @@
   margin: 0;
 }
 
+.fragment-card .button-container a.button::after {
+  font-family: 'Font Awesome 5 Solid';
+  font-size: 1rem;
+  margin-left: 8px;
+  transition: all 0.3s ease;
+}
+
+/* Primary CTA (hero-like: cta-button) */
+.fragment-card .button-container.cta-button a.button {
+  background-color: var(--main-accent-color, #007bff);
+  border: 2px solid var(--main-accent-color, #007bff);
+  color: var(--text-light, #fff);
+}
+
+.fragment-card .button-container.cta-button a.button::after {
+  content: "\f105";
+  color: var(--text-light, #fff);
+}
+
+.fragment-card .button-container.cta-button a.button:hover {
+  background-color: transparent;
+  color: var(--main-accent-color, #007bff);
+}
+
+.fragment-card .button-container.cta-button a.button:hover::after {
+  color: currentcolor;
+  transform: translateX(2px);
+}
+
+/* Secondary CTA (hero-like: cta-button-secondary) */
+.fragment-card .button-container.cta-button-secondary a.button {
+  background: transparent;
+  border: 2px solid var(--main-accent-color, #007bff);
+  color: var(--main-accent-color, #007bff);
+}
+
+.fragment-card .button-container.cta-button-secondary a.button::after {
+  content: "\f105";
+  color: currentcolor;
+}
+
+.fragment-card .button-container.cta-button-secondary a.button:hover {
+  background-color: var(--main-accent-color, #007bff);
+  color: var(--text-light, #fff);
+}
+
+.fragment-card .button-container.cta-button-secondary a.button:hover::after {
+  transform: translateX(2px);
+}
+
+/* Link CTA (hero-like: cta-link) */
+.fragment-card .button-container.cta-link a.button {
+  padding: 0 !important;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: var(--main-accent-color, #007bff);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.fragment-card .button-container.cta-link a.button::after {
+  content: "\f105";
+  color: currentcolor;
+}
+
+.fragment-card .button-container.cta-link a.button:hover::after {
+  transform: translateX(2px);
+}
+
 .fragment-card-cta-static .button {
   display: inline-block;
   padding: 12px 24px;
