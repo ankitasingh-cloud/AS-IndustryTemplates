@@ -451,7 +451,7 @@ function addCarouselNav(block, resultsContainer) {
 // --- Main Decorate Function ---
 export default async function decorate(block) {
   // Parse config from block key-value structure
-  let title = 'Fragment List';
+  let title = '';
   let subtitle = '';
   let layout = 'grid';
   let dataSourceType = 'content-fragments';
@@ -463,8 +463,8 @@ export default async function decorate(block) {
   let enableTagFilter = true;
   let searchPlaceholder = 'Search...';
   let showTags = false;
-  let ctaButtonLabel = 'Learn More';
-  let noResultsMessage = 'No items found';
+  let ctaButtonLabel = '';
+  let noResultsMessage = '';
   let customClass = '';
 
   const rows = Array.from(block.querySelectorAll(':scope > div'));
