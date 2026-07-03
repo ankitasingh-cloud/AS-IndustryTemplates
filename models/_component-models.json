@@ -1361,6 +1361,19 @@
         "description": "Default label for the card action button"
       },
       {
+        "component": "select",
+        "name": "ctastyle",
+        "label": "CTA Style",
+        "valueType": "string",
+        "value": "",
+        "options": [
+          { "name": "Default", "value": "" },
+          { "name": "Button", "value": "button" },
+          { "name": "Button Secondary", "value": "button-secondary" },
+          { "name": "Link", "value": "link" }
+        ]
+      },
+      {
         "component": "text",
         "valueType": "string",
         "name": "noResultsMessage",

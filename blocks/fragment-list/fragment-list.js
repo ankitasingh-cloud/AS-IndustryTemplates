@@ -49,8 +49,11 @@ function getUniqueTags(cards) {
   return Array.from(tags).sort();
 }
 
-function getCtaVariant(layout) {
-  return layout === 'articles' ? 'cta-button-secondary' : 'cta-button';
+function getCtaVariant(config) {
+  if (config.ctaStyle) {
+    return `cta-${config.ctaStyle}`;
+  }
+  return '';
 }
 
 // --- Data Fetching ---
@@ -322,7 +325,7 @@ function createFragmentCard(card, config) {
 
   // CTA Button
   const ctaLabel = card.ctaText || config.ctaButtonLabel || 'Learn More';
-  const ctaVariant = getCtaVariant(config.layout);
+  const ctaVariant = getCtaVariant(config);
   if (card.ctaLink) {
     html += `<p class="button-container ${ctaVariant}"><a href="${card.ctaLink}" class="button" target="_blank" rel="noopener noreferrer">${ctaLabel}</a></p>`;
   } else {
@@ -464,6 +467,7 @@ export default async function decorate(block) {
   let searchPlaceholder = 'Search...';
   let showTags = false;
   let ctaButtonLabel = 'Learn More';
+  let ctaStyle = '';
   let noResultsMessage = 'No items found';
   let customClass = '';
 
@@ -504,6 +508,8 @@ export default async function decorate(block) {
       case 'showtags': showTags = value === 'true'; break;
       case 'cta button label':
       case 'ctabuttonlabel': ctaButtonLabel = value; break;
+      case 'cta style':
+      case 'ctastyle': ctaStyle = value; break;
       case 'no results message':
       case 'noresultsmessage': noResultsMessage = value; break;
       case 'custom class':
@@ -537,6 +543,7 @@ export default async function decorate(block) {
     searchPlaceholder,
     showTags,
     ctaButtonLabel,
+    ctaStyle,
     noResultsMessage,
   };
 

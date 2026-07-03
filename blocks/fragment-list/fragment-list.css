@@ -161,6 +161,22 @@
   cursor: default;
 }
 
+/* CTA Link variant */
+.fragment-card .button-container.cta-link a.button {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  padding: 0;
+  color: var(--link-color, var(--main-accent-color));
+  text-decoration: underline;
+  font-weight: 600;
+}
+
+.fragment-card .button-container.cta-link a.button:hover {
+  color: var(--main-accent-color);
+  text-decoration: none;
+}
+
 /* No Results */
 .no-results {
   grid-column: 1 / -1;
