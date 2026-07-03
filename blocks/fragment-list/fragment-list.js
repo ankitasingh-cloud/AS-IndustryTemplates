@@ -50,9 +50,13 @@ function getUniqueTags(cards) {
 }
 
 function getCtaVariant(config) {
+  console.log('[fragment-list] getCtaVariant called with ctaStyle:', JSON.stringify(config.ctaStyle));
   if (config.ctaStyle) {
-    return `cta-${config.ctaStyle}`;
+    const variant = `cta-${config.ctaStyle}`;
+    console.log('[fragment-list] CTA variant resolved to:', variant);
+    return variant;
   }
+  console.log('[fragment-list] No ctaStyle set, returning empty string');
   return '';
 }
 
@@ -453,6 +457,7 @@ function addCarouselNav(block, resultsContainer) {
 
 // --- Main Decorate Function ---
 export default async function decorate(block) {
+  console.log('[fragment-list] decorate() called');
   // Parse config from block key-value structure
   let title = 'Fragment List';
   let subtitle = '';
@@ -546,6 +551,8 @@ export default async function decorate(block) {
     ctaStyle,
     noResultsMessage,
   };
+  console.log('[fragment-list] Parsed config:', JSON.stringify(config, null, 2));
+  console.log('[fragment-list] ctaStyle value:', JSON.stringify(ctaStyle));
 
   // --- Build UI ---
   // Header
