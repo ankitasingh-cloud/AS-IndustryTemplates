@@ -53,6 +53,13 @@ function getCtaVariant(layout) {
   return layout === 'articles' ? 'cta-button-secondary' : 'cta-button';
 }
 
+function getCtaClass(layout, ctaStyle) {
+  const normalizedStyle = (ctaStyle || '').toString().trim().toLowerCase();
+  const supportedStyles = ['button', 'button-secondary', 'link'];
+  if (supportedStyles.includes(normalizedStyle)) return `cta-${normalizedStyle}`;
+  return getCtaVariant(layout);
+}
+
 // --- Data Fetching ---
 
 /**
@@ -322,7 +329,7 @@ function createFragmentCard(card, config) {
 
   // CTA Button
   const ctaLabel = card.ctaText || config.ctaButtonLabel || 'Learn More';
-  const ctaVariant = getCtaVariant(config.layout);
+  const ctaVariant = getCtaClass(config.layout, config.ctaStyle);
   if (card.ctaLink) {
     html += `<p class="button-container ${ctaVariant}"><a href="${card.ctaLink}" class="button" target="_blank" rel="noopener noreferrer">${ctaLabel}</a></p>`;
   } else {
@@ -463,6 +470,7 @@ export default async function decorate(block) {
   let enableTagFilter = true;
   let searchPlaceholder = 'Search...';
   let showTags = false;
+  let ctaStyle = '';
   let ctaButtonLabel = 'Learn More';
   let noResultsMessage = 'No items found';
   let customClass = '';
@@ -502,6 +510,8 @@ export default async function decorate(block) {
       case 'searchplaceholder': searchPlaceholder = value; break;
       case 'show tags':
       case 'showtags': showTags = value === 'true'; break;
+      case 'cta style':
+      case 'ctastyle': ctaStyle = value; break;
       case 'cta button label':
       case 'ctabuttonlabel': ctaButtonLabel = value; break;
       case 'no results message':
@@ -536,6 +546,7 @@ export default async function decorate(block) {
     enableTagFilter,
     searchPlaceholder,
     showTags,
+    ctaStyle,
     ctaButtonLabel,
     noResultsMessage,
   };

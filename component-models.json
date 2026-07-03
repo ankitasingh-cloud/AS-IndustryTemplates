@@ -1432,6 +1432,31 @@
         }
       },
       {
+        "component": "select",
+        "name": "ctastyle",
+        "label": "CTA Style",
+        "valueType": "string",
+        "value": "",
+        "options": [
+          {
+            "name": "default",
+            "value": ""
+          },
+          {
+            "name": "Button",
+            "value": "button"
+          },
+          {
+            "name": "Button secondary",
+            "value": "button-secondary"
+          },
+          {
+            "name": "Link",
+            "value": "link"
+          }
+        ]
+      },
+      {
         "component": "text",
         "valueType": "string",
         "name": "ctaButtonLabel",
