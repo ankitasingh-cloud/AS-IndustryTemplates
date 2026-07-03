@@ -49,14 +49,8 @@ function getUniqueTags(cards) {
   return Array.from(tags).sort();
 }
 
-function getCtaVariant(layout) {
-  return layout === 'articles' ? 'cta-button-secondary' : 'cta-button';
-}
-
-function getCtaClass(layout, ctaStyle) {
-  const normalizedStyle = (ctaStyle ?? '').toString().trim().toLowerCase();
-  if (normalizedStyle) return `cta-${normalizedStyle || 'default'}`;
-  return getCtaVariant(layout);
+function getCtaClass(ctaStyle) {
+  return `cta-${ctaStyle || 'default'}`;
 }
 
 // --- Data Fetching ---
@@ -328,7 +322,7 @@ function createFragmentCard(card, config) {
 
   // CTA Button
   const ctaLabel = card.ctaText || config.ctaButtonLabel || 'Learn More';
-  const ctaVariant = getCtaClass(config.layout, config.ctaStyle);
+  const ctaVariant = getCtaClass(config.ctaStyle);
   if (card.ctaLink) {
     html += `<p class="button-container ${ctaVariant}"><a href="${card.ctaLink}" class="button" target="_blank" rel="noopener noreferrer">${ctaLabel}</a></p>`;
   } else {
