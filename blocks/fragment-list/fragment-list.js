@@ -54,9 +54,8 @@ function getCtaVariant(layout) {
 }
 
 function getCtaClass(layout, ctaStyle) {
-  const normalizedStyle = (ctaStyle || '').toString().trim().toLowerCase();
-  const supportedStyles = ['button', 'button-secondary', 'link'];
-  if (supportedStyles.includes(normalizedStyle)) return `cta-${normalizedStyle}`;
+  const normalizedStyle = (ctaStyle ?? '').toString().trim().toLowerCase();
+  if (normalizedStyle) return `cta-${normalizedStyle || 'default'}`;
   return getCtaVariant(layout);
 }
 
