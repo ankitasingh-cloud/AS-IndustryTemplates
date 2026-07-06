@@ -62,11 +62,46 @@ function getCtaVariant(config) {
   return config.layout === 'articles' ? 'cta-button-secondary' : 'cta-button';
 }
 
+function deriveRemoteFileName(assetId) {
+  if (!assetId || typeof assetId !== 'string') return '';
+  const lastSegment = assetId.split('/').pop();
+  return lastSegment || '';
+}
+
+function resolveImageUrl(imageField, isAuthorEnv) {
+  if (!imageField) return '';
+
+  if (typeof imageField === 'string') {
+    return imageField;
+  }
+
+  const typename = imageField.__typename;
+
+  if (typename === 'RemoteRef' || (imageField.repositoryId && imageField.assetId)) {
+    const repositoryId = (imageField.repositoryId || '').trim();
+    const assetId = (imageField.assetId || '').trim();
+    const fileName = deriveRemoteFileName(assetId);
+
+    if (!repositoryId || !assetId || !fileName) return '';
+
+    const host = repositoryId.startsWith('http://') || repositoryId.startsWith('https://')
+      ? repositoryId.replace(/\/$/, '')
+      : `https://${repositoryId}`;
+
+    return `${host}/adobe/dynamicmedia/deliver/${assetId}/${fileName}`;
+  }
+
+  if (typename === 'ImageRef' || imageField._dynamicUrl || imageField._publishUrl || imageField._authorUrl) {
+    return imageField._dynamicUrl || imageField._publishUrl || imageField._authorUrl || '';
+  }
+
+  return '';
+}
+
 // --- Data Fetching ---
 
 /**
  * Primary method: Content Fragment Open API
- * Returns null if Open API is not enabled (non-200), [] if folder is empty/invalid, or card array on success.
  */
 async function fetchViaOpenAPI(folderPath, modelName) {
   try {
@@ -141,20 +176,20 @@ async function fetchViaGraphQL(folderPath) {
 
     const requestConfig = isAuthor
       ? {
-          url: `${aemauthorurl}${GRAPHQL_QUERY_PATH};path=${decodedFolderPath};ts=${Date.now()}`,
-          method: 'GET',
-          headers: { 'Content-Type': 'application/json' },
-        }
+        url: `${aemauthorurl}${GRAPHQL_QUERY_PATH};path=${decodedFolderPath};ts=${Date.now()}`,
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' },
+      }
       : {
-          url: CONFIG.WRAPPER_SERVICE_URL,
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            graphQLPath: `${aempublishurl}${GRAPHQL_QUERY_PATH}`,
-            cfPath: decodedFolderPath,
-            variation: `main;ts=${Date.now()}`,
-          }),
-        };
+        url: CONFIG.WRAPPER_SERVICE_URL,
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          graphQLPath: `${aempublishurl}${GRAPHQL_QUERY_PATH}`,
+          cfPath: decodedFolderPath,
+          variation: `main;ts=${Date.now()}`,
+        }),
+      };
 
     const response = await fetch(requestConfig.url, {
       method: requestConfig.method,
@@ -195,7 +230,9 @@ async function fetchFromExternalAPI(apiUrl) {
  * Orchestrator: decides which fetch method to use based on config
  */
 async function fetchFragmentData(config) {
-  const { dataSourceType, contentFragmentFolder, apiUrl, modelName } = config;
+  const {
+    dataSourceType, contentFragmentFolder, apiUrl, modelName,
+  } = config;
 
   if (dataSourceType === 'api') {
     if (!apiUrl) {
@@ -225,9 +262,7 @@ async function fetchFragmentData(config) {
 // --- Transformers ---
 
 function transformOpenAPIItem(item, isAuthorEnv) {
-  const imageUrl = typeof item?.image === 'string'
-    ? item.image
-    : item?.image?.[isAuthorEnv ? '_authorUrl' : '_publishUrl'] || item?.image?._dynamicUrl || '';
+  const imageUrl = resolveImageUrl(item?.image, isAuthorEnv);
 
   const tags = Array.isArray(item?.tags)
     ? item.tags.map(extractTagLabel).filter(Boolean)
@@ -250,7 +285,7 @@ function transformOpenAPIItem(item, isAuthorEnv) {
 }
 
 function transformGraphQLItem(item, isAuthorEnv) {
-  const imageUrl = item?.image?.[isAuthorEnv ? '_authorUrl' : '_publishUrl'] || item?.image?._dynamicUrl || '';
+  const imageUrl = resolveImageUrl(item?.image, isAuthorEnv);
 
   const tags = Array.isArray(item?.tags)
     ? item.tags.map(extractTagLabel).filter(Boolean)
