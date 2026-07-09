@@ -2,7 +2,7 @@
 import { isAuthorEnvironment, normalizeAemPath } from '../../scripts/scripts.js';
 import { readBlockConfig } from '../../scripts/aem.js';
 import { dispatchCustomEvent } from '../../scripts/custom-events.js';
-import { getEnvironmentValue, getHostname } from '../../scripts/utils.js';
+import { getEnvironmentValue, getHostname, resolveImageUrl } from '../../scripts/utils.js';
 
 const AUTHOR_GRAPHQL_BASE_For_Search = '/graphql/execute.json/wknd-fly/flight-details-list-with-path';
 const PUBLISH_GRAPHQL_BASE_For_Search = 'https://275323-918sangriatortoise.adobeioruntime.net/api/v1/web/dx-excshell-1/flight-details-list';
@@ -151,7 +151,7 @@ function calculateFlightLengthFromTimes(departureTime, arrivalTime) {
 
 function mapGraphQLItemToFlight(item, isAuthor) {
   const imageRef = item?.image || item?.bannerimage;
-  const imageUrl = imageRef?.[isAuthor ? '_authorUrl' : '_publishUrl'] || imageRef?._dynamicUrl || '';
+  const imageUrl = resolveImageUrl(imageRef, isAuthor);
   const id = item?.id?.trim() || item?._path?.replace(/[/]/g, '_') || item?.title || `flight-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
   // Support both CF model names (flightFromShortName, flightPrice, etc.) and alternate names (from, price)
   const from = item?.flightFromShortName ?? item?.from ?? '';

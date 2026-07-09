@@ -434,6 +434,29 @@ function createResponsiveAemDamPicture(
  * @returns {HTMLPictureElement|null}
  */
 function createLumaProductImagePicture(damImageURL, alt = '', { isAuthor = false, eager = false } = {}) {
+  // Handle RemoteRef (remote/Dynamic Media asset from connected DAM)
+  // eslint-disable-next-line no-underscore-dangle
+  if (damImageURL?.__typename === 'RemoteRef' || (damImageURL?.repositoryId && damImageURL?.assetId)) {
+    const repositoryId = (damImageURL.repositoryId || '').trim();
+    const assetId = (damImageURL.assetId || '').trim();
+    const fileName = assetId.split('/').pop() || '';
+    if (repositoryId && assetId && fileName) {
+      const host = repositoryId.startsWith('http://') || repositoryId.startsWith('https://')
+        ? repositoryId.replace(/\/$/, '')
+        : `https://${repositoryId}`;
+      const remoteUrl = `${host}/adobe/dynamicmedia/deliver/${assetId}/${fileName}`;
+      const picture = document.createElement('picture');
+      const img = document.createElement('img');
+      img.src = remoteUrl;
+      img.alt = alt;
+      img.loading = eager ? 'eager' : 'lazy';
+      if (eager) img.setAttribute('fetchpriority', 'high');
+      picture.appendChild(img);
+      return picture;
+    }
+    return null;
+  }
+
   if (damImageURL?._dynamicUrl && (damImageURL._publishUrl || damImageURL._authorUrl)) {
     const listingWidths = [240, 480];
     const detailWidths = [480, 960, 1200];

@@ -1,6 +1,6 @@
 import { getMetadata } from '../../scripts/aem.js';
 import { isAuthorEnvironment } from '../../scripts/scripts.js';
-import { getHostname } from '../../scripts/utils.js';
+import { getHostname, resolveImageUrl } from '../../scripts/utils.js';
 
 // --- Constants ---
 const GRAPHQL_QUERY_PATH = '/graphql/execute.json/ref-demo-eds/GetContentCardListFromFolder';
@@ -60,42 +60,6 @@ function getCtaVariant(config) {
     return styleMap[config.ctaStyle] || 'cta-button';
   }
   return config.layout === 'articles' ? 'cta-button-secondary' : 'cta-button';
-}
-
-function deriveRemoteFileName(assetId) {
-  if (!assetId || typeof assetId !== 'string') return '';
-  const lastSegment = assetId.split('/').pop();
-  return lastSegment || '';
-}
-
-function resolveImageUrl(imageField, isAuthorEnv) {
-  if (!imageField) return '';
-
-  if (typeof imageField === 'string') {
-    return imageField;
-  }
-
-  const typename = imageField.__typename;
-
-  if (typename === 'RemoteRef' || (imageField.repositoryId && imageField.assetId)) {
-    const repositoryId = (imageField.repositoryId || '').trim();
-    const assetId = (imageField.assetId || '').trim();
-    const fileName = deriveRemoteFileName(assetId);
-
-    if (!repositoryId || !assetId || !fileName) return '';
-
-    const host = repositoryId.startsWith('http://') || repositoryId.startsWith('https://')
-      ? repositoryId.replace(/\/$/, '')
-      : `https://${repositoryId}`;
-
-    return `${host}/adobe/dynamicmedia/deliver/${assetId}/${fileName}`;
-  }
-
-  if (typename === 'ImageRef' || imageField._dynamicUrl || imageField._publishUrl || imageField._authorUrl) {
-    return imageField._dynamicUrl || imageField._publishUrl || imageField._authorUrl || '';
-  }
-
-  return '';
 }
 
 // --- Data Fetching ---
@@ -272,6 +236,7 @@ function transformOpenAPIItem(item, isAuthorEnv) {
   const subtextHtml = item?.subtext?.html || '';
 
   return {
+    // eslint-disable-next-line no-underscore-dangle
     id: item?._path || item?.id || Math.random().toString(36).slice(2),
     title: item?.title || '',
     subtext,

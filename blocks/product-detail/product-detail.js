@@ -1,7 +1,7 @@
 import { createLumaProductImagePicture, readBlockConfig } from "../../scripts/aem.js";
 import { isAuthorEnvironment, normalizeCategoryValue } from "../../scripts/scripts.js";
 import { dispatchCustomEvent } from "../../scripts/custom-events.js";
-import { getEnvironmentValue, getHostname } from "../../scripts/utils.js";
+import { getEnvironmentValue, getHostname, resolveImageUrl } from "../../scripts/utils.js";
 
 const AUTHOR_PRODUCT_DETAIL_ENDPOINT = "/graphql/execute.json/dsn-eds-configuration/productDescriptionByPathAndSKU;";
 const PUBLISH_GRAPHQL_PROXY_ENDPOINT = "https://275323-918sangriatortoise.adobeioruntime.net/api/v1/web/dx-excshell-1/fetch-product-information";
@@ -167,7 +167,7 @@ function buildRecommendationCard(item, isAuthor) {
   }
 
   let picture = null;
-  if (damImageURL && (damImageURL._dynamicUrl || damImageURL._publishUrl || damImageURL._authorUrl)) {
+  if (resolveImageUrl(damImageURL, isAuthor)) {
     picture = createLumaProductImagePicture(damImageURL, name || "Product image", {
       isAuthor,
       eager: false,
@@ -217,7 +217,7 @@ function buildProductDetail(product, isAuthor, eventConfig = {}) {
 
   // Update dataLayer with product information
   // If dataLayer is not ready, the update will be queued automatically
-  const imageUrl = isAuthor ? damImageURL?._authorUrl : damImageURL?._publishUrl;
+  const imageUrl = resolveImageUrl(damImageURL, isAuthor);
 
   const productData = {
     id: id || sku || "",
@@ -251,7 +251,7 @@ function buildProductDetail(product, isAuthor, eventConfig = {}) {
   const imageSection = document.createElement("div");
   imageSection.className = "pd-image";
 
-  if (damImageURL && (damImageURL._dynamicUrl || damImageURL._publishUrl || damImageURL._authorUrl)) {
+  if (resolveImageUrl(damImageURL, isAuthor)) {
     const picture = createLumaProductImagePicture(damImageURL, name || "Product image", {
       isAuthor,
       eager: true,
@@ -312,7 +312,7 @@ function buildProductDetail(product, isAuthor, eventConfig = {}) {
     addToCartBtn.textContent = "Add to Cart";
     addToCartBtn.setAttribute("aria-label", `Add ${name} to cart`);
     addToCartBtn.addEventListener("click", () => {
-      const cartImageUrl = isAuthor ? damImageURL?._authorUrl : damImageURL?._publishUrl;
+      const cartImageUrl = resolveImageUrl(damImageURL, isAuthor);
       const formattedCategory =
         category.length > 0
           ? category
