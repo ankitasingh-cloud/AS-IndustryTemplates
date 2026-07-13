@@ -1,6 +1,6 @@
 import { readBlockConfig } from '../../scripts/aem.js';
 import { isAuthorEnvironment, normalizeCategoryValue } from '../../scripts/scripts.js';
-import { getEnvironmentValue, getHostname } from '../../scripts/utils.js';
+import { getEnvironmentValue, getHostname, resolveImageUrl } from '../../scripts/utils.js';
 
 const AUTHOR_GRAPHQL_BASE = '/graphql/execute.json/dsn-eds-configuration/productFeatureListByPath';
 const PUBLISH_GRAPHQL_PROXY_ENDPOINT = 'https://275323-918sangriatortoise.adobeioruntime.net/api/v1/web/dx-excshell-1/fetch-product-information';
@@ -38,14 +38,10 @@ function normalizeContentFragmentPath(path, isAuthor) {
 }
 
 // Image resolution: damFeatureImageURL takes priority over externalFeatureImageURL.
-// On author env: _authorUrl → _publishUrl → _dynamicUrl
-// On publish env: _publishUrl → _authorUrl → _dynamicUrl
+// Uses shared resolveImageUrl for DAM/RemoteRef handling, falls back to external URL.
 function normalizeImageUrl(damObj, externalUrl, isAuthor) {
-  if (damObj) {
-    return isAuthor
-      ? damObj._authorUrl || damObj._publishUrl || damObj._dynamicUrl
-      : damObj._publishUrl || damObj._authorUrl || damObj._dynamicUrl;
-  }
+  const resolved = resolveImageUrl(damObj, isAuthor);
+  if (resolved) return resolved;
   return externalUrl || '';
 }
 
@@ -250,5 +246,4 @@ export default async function decorate(block) {
   categoryMap.forEach((categoryItems, categoryName) => {
     block.appendChild(buildCategorySection(categoryName, categoryItems));
   });
-
 }

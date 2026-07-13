@@ -1,6 +1,6 @@
 import { getMetadata } from '../../scripts/aem.js';
 import { isAuthorEnvironment } from '../../scripts/scripts.js';
-import { getHostname } from '../../scripts/utils.js';
+import { getHostname, resolveImageUrl } from '../../scripts/utils.js';
 
 // --- Constants ---
 const GRAPHQL_QUERY_PATH = '/graphql/execute.json/ref-demo-eds/GetContentCardListFromFolder';
@@ -66,7 +66,6 @@ function getCtaVariant(config) {
 
 /**
  * Primary method: Content Fragment Open API
- * Returns null if Open API is not enabled (non-200), [] if folder is empty/invalid, or card array on success.
  */
 async function fetchViaOpenAPI(folderPath, modelName) {
   try {
@@ -141,20 +140,20 @@ async function fetchViaGraphQL(folderPath) {
 
     const requestConfig = isAuthor
       ? {
-          url: `${aemauthorurl}${GRAPHQL_QUERY_PATH};path=${decodedFolderPath};ts=${Date.now()}`,
-          method: 'GET',
-          headers: { 'Content-Type': 'application/json' },
-        }
+        url: `${aemauthorurl}${GRAPHQL_QUERY_PATH};path=${decodedFolderPath};ts=${Date.now()}`,
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' },
+      }
       : {
-          url: CONFIG.WRAPPER_SERVICE_URL,
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            graphQLPath: `${aempublishurl}${GRAPHQL_QUERY_PATH}`,
-            cfPath: decodedFolderPath,
-            variation: `main;ts=${Date.now()}`,
-          }),
-        };
+        url: CONFIG.WRAPPER_SERVICE_URL,
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          graphQLPath: `${aempublishurl}${GRAPHQL_QUERY_PATH}`,
+          cfPath: decodedFolderPath,
+          variation: `main;ts=${Date.now()}`,
+        }),
+      };
 
     const response = await fetch(requestConfig.url, {
       method: requestConfig.method,
@@ -195,7 +194,9 @@ async function fetchFromExternalAPI(apiUrl) {
  * Orchestrator: decides which fetch method to use based on config
  */
 async function fetchFragmentData(config) {
-  const { dataSourceType, contentFragmentFolder, apiUrl, modelName } = config;
+  const {
+    dataSourceType, contentFragmentFolder, apiUrl, modelName,
+  } = config;
 
   if (dataSourceType === 'api') {
     if (!apiUrl) {
@@ -225,9 +226,7 @@ async function fetchFragmentData(config) {
 // --- Transformers ---
 
 function transformOpenAPIItem(item, isAuthorEnv) {
-  const imageUrl = typeof item?.image === 'string'
-    ? item.image
-    : item?.image?.[isAuthorEnv ? '_authorUrl' : '_publishUrl'] || item?.image?._dynamicUrl || '';
+  const imageUrl = resolveImageUrl(item?.image, isAuthorEnv);
 
   const tags = Array.isArray(item?.tags)
     ? item.tags.map(extractTagLabel).filter(Boolean)
@@ -237,6 +236,7 @@ function transformOpenAPIItem(item, isAuthorEnv) {
   const subtextHtml = item?.subtext?.html || '';
 
   return {
+    // eslint-disable-next-line no-underscore-dangle
     id: item?._path || item?.id || Math.random().toString(36).slice(2),
     title: item?.title || '',
     subtext,
@@ -250,7 +250,7 @@ function transformOpenAPIItem(item, isAuthorEnv) {
 }
 
 function transformGraphQLItem(item, isAuthorEnv) {
-  const imageUrl = item?.image?.[isAuthorEnv ? '_authorUrl' : '_publishUrl'] || item?.image?._dynamicUrl || '';
+  const imageUrl = resolveImageUrl(item?.image, isAuthorEnv);
 
   const tags = Array.isArray(item?.tags)
     ? item.tags.map(extractTagLabel).filter(Boolean)

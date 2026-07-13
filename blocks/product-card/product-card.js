@@ -1,6 +1,6 @@
 import { readBlockConfig } from '../../scripts/aem.js';
 import { isAuthorEnvironment } from '../../scripts/scripts.js';
-import { getEnvironmentValue, getHostname } from '../../scripts/utils.js';
+import { getEnvironmentValue, getHostname, resolveImageUrl } from '../../scripts/utils.js';
 
 const FALLBACK_PRODUCT = {
   id: 'f0I76hY77',
@@ -58,14 +58,7 @@ function resolvePath(obj, path) {
 function normalizeImageUrl(value) {
   if (!value) return undefined;
   const useAuthorUrl = isAuthorEnvironment();
-  let url;
-  if (typeof value === 'string') {
-    url = value;
-  } else if (useAuthorUrl) {
-    url = value?._authorUrl || value?._publishUrl || value?._dynamicUrl || value?.url;
-  } else {
-    url = value?._publishUrl || value?._authorUrl || value?._dynamicUrl || value?.url;
-  }
+  const url = resolveImageUrl(value, useAuthorUrl) || (typeof value === 'object' ? value?.url : undefined);
   if (!url) return undefined;
   try {
     return new URL(url, window.location.href).href;
