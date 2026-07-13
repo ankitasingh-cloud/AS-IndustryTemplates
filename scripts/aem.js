@@ -160,15 +160,15 @@ function hideSidekick() {
   const hasZdpId = urlParams.has('zdp-id');
   const hasZdpEnv = urlParams.has('zdp-env');
   const hasZdpToken = urlParams.has('zdp-token');
-  
+
   // Only proceed if all required ZDP parameters are present
   if (!hasZdpId || !hasZdpEnv || !hasZdpToken) {
     console.log('ZDP parameters not found, skipping sidekick hiding');
     return;
   }
-  
+
   const sidekick = document.querySelector('aem-sidekick');
-  
+
   if (sidekick) {
     // Sidekick found, hide it if open
     if (sidekick.hasAttribute('open')) {
@@ -178,7 +178,7 @@ function hideSidekick() {
   } else {
     // Sidekick not found yet, watch for it to be added
     console.log('sidekick not found, watching for it...');
-    
+
     const observer = new MutationObserver((mutations, obs) => {
       const sidekickElement = document.querySelector('aem-sidekick');
       if (sidekickElement) {
@@ -189,13 +189,13 @@ function hideSidekick() {
         obs.disconnect(); // Stop observing once found
       }
     });
-    
+
     // Watch body for added child nodes
     observer.observe(document.body, {
       childList: true,
-      subtree: false
+      subtree: false,
     });
-    
+
     // Stop observing after 10 seconds as a safety measure
     setTimeout(() => observer.disconnect(), 10000);
   }
@@ -439,7 +439,8 @@ function createLumaProductImagePicture(damImageURL, alt = '', { isAuthor = false
   if (damImageURL?.__typename === 'RemoteRef' || (damImageURL?.repositoryId && damImageURL?.assetId)) {
     const repositoryId = (damImageURL.repositoryId || '').trim();
     const assetId = (damImageURL.assetId || '').trim();
-    const fileName = assetId.split('/').pop() || '';
+    // const fileName = assetId.split('/').pop() || '';
+    const fileName = '/asset.png';
     if (repositoryId && assetId && fileName) {
       const host = repositoryId.startsWith('http://') || repositoryId.startsWith('https://')
         ? repositoryId.replace(/\/$/, '')
@@ -830,8 +831,7 @@ function applySectionItemWidths(section) {
     || section.getAttribute('data-sec-item-widths')
     || '').trim();
   const isSectionBg = (el) => el.tagName === 'PICTURE' && el.classList?.contains('section-bg');
-  let sectionChildren = [...section.children].filter((el) =>
-    !el.classList?.contains('section-metadata') && !isSectionBg(el));
+  let sectionChildren = [...section.children].filter((el) => !el.classList?.contains('section-metadata') && !isSectionBg(el));
   let inner = section.querySelector('.default-content-wrapper') || sectionChildren[0];
   if (!inner) return;
 
@@ -861,8 +861,7 @@ function applySectionItemWidths(section) {
       const idx = sectionChildren.indexOf(dcw);
       newWrappers.forEach((w) => section.insertBefore(w, dcw));
       dcw.remove();
-      sectionChildren = [...section.children].filter((el) =>
-        !el.classList?.contains('section-metadata') && !isSectionBg(el));
+      sectionChildren = [...section.children].filter((el) => !el.classList?.contains('section-metadata') && !isSectionBg(el));
       inner = section.querySelector('.default-content-wrapper') || sectionChildren[0];
     }
   }
@@ -1053,7 +1052,6 @@ async function fetchPlaceholders(prefix = 'default') {
   return window.placeholders[`${prefix}`];
 }
 
-
 /*
 // eslint-disable-next-line import/prefer-default-export
 async function fetchPlaceholders(prefix = 'default') {
@@ -1176,32 +1174,32 @@ function decorateBlock(block) {
     if (section) section.classList.add(`${shortBlockName}-container`);
     // eslint-disable-next-line no-use-before-define
     decorateButtons(block);
-          // Set block ID with shortBlockName and index
-          const blocks = document.querySelectorAll(`.${shortBlockName}`);
-          blocks.forEach((block, index) => {
-            block.id = `${shortBlockName}-${index}`;
-            
-            // Add indexed IDs to images within the block
-            const images = block.querySelectorAll('img');
-            images.forEach((img, imgIndex) => {
-              const imgId = `${shortBlockName}_${index}_image_${imgIndex}`;
-              img.id = imgId;
-            });
-            // Skip content ID generation for blocks that handle it themselves (columns, cards, carousel)
-            const blocksWithCustomIDs = ['columns', 'cards', 'carousel'];
-            if (!blocksWithCustomIDs.includes(shortBlockName)) {
-              // Merge headings (h1-h6) and paragraphs into a single loop for efficiency
-              ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p'].forEach((tag) => {
-                const elements = block.querySelectorAll(tag);
-                elements.forEach((el, elIndex) => {
-                  el.id = `${shortBlockName}_${index}_${tag}_${elIndex}`;
-                });
-              });
-            }
+    // Set block ID with shortBlockName and index
+    const blocks = document.querySelectorAll(`.${shortBlockName}`);
+    blocks.forEach((block, index) => {
+      block.id = `${shortBlockName}-${index}`;
+
+      // Add indexed IDs to images within the block
+      const images = block.querySelectorAll('img');
+      images.forEach((img, imgIndex) => {
+        const imgId = `${shortBlockName}_${index}_image_${imgIndex}`;
+        img.id = imgId;
+      });
+      // Skip content ID generation for blocks that handle it themselves (columns, cards, carousel)
+      const blocksWithCustomIDs = ['columns', 'cards', 'carousel'];
+      if (!blocksWithCustomIDs.includes(shortBlockName)) {
+        // Merge headings (h1-h6) and paragraphs into a single loop for efficiency
+        ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p'].forEach((tag) => {
+          const elements = block.querySelectorAll(tag);
+          elements.forEach((el, elIndex) => {
+            el.id = `${shortBlockName}_${index}_${tag}_${elIndex}`;
           });
-          }
-          }
-        
+        });
+      }
+    });
+  }
+}
+
 /**
  * Decorates a default block.
  * @param {Element} block The block element
@@ -1213,7 +1211,7 @@ export function decorateDefaultBlock(main) {
     const defaultWrappers = section.querySelectorAll('.default-content-wrapper');
     defaultWrappers.forEach((wrapper, wrapperIndex) => {
       wrapper.setAttribute('data-section-content-index', `${sectionIndex}_${wrapperIndex}`);
-      
+
       // Add IDs to text elements (overwrite any existing IDs)
       ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'ul', 'ol'].forEach((tag) => {
         const elements = wrapper.querySelectorAll(tag);
@@ -1221,22 +1219,22 @@ export function decorateDefaultBlock(main) {
         elements.forEach((el) => {
           // Check if this is a <p> tag containing only an image (picture or img element)
           if (tag === 'p') {
-            const hasOnlyImage = el.querySelector('picture, img') &&
-                                el.textContent.trim() === '';
-            
+            const hasOnlyImage = el.querySelector('picture, img')
+                                && el.textContent.trim() === '';
+
             if (hasOnlyImage) {
               // Skip ID assignment for <p> tags that only contain images
               // The image itself will get its own ID separately
               return; // Skip this element
             }
           }
-          
+
           el.id = `section_${sectionIndex}_content_${wrapperIndex}_${tag}_${adjustedIndex}`;
           adjustedIndex++;
         });
       });
     });
-    
+
     // Add IDs to images at section level (overwrite any existing IDs)
     const images = section.querySelectorAll('.default-content-wrapper img');
     images.forEach((img, imgIndex) => {
@@ -1403,5 +1401,5 @@ export {
   toClassName,
   waitForFirstImage,
   wrapTextNodes,
-  hideSidekick
+  hideSidekick,
 };
