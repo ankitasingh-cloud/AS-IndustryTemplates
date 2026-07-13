@@ -440,7 +440,7 @@ function createLumaProductImagePicture(damImageURL, alt = '', { isAuthor = false
     const repositoryId = (damImageURL.repositoryId || '').trim();
     const assetId = (damImageURL.assetId || '').trim();
     // const fileName = assetId.split('/').pop() || '';
-    const fileName = '/asset.png';
+    const fileName = 'asset.png';
     if (repositoryId && assetId && fileName) {
       const host = repositoryId.startsWith('http://') || repositoryId.startsWith('https://')
         ? repositoryId.replace(/\/$/, '')

@@ -529,7 +529,7 @@ export function resolveImageUrl(imageField, isAuthorEnv = false) {
     case 'RemoteRef': {
       const repositoryId = (imageField.repositoryId || '').trim();
       const assetId = (imageField.assetId || '').trim();
-      const fileName = '/remoteRefAsset.png';
+      const fileName = 'remoteRefAsset.png';
 
       if (!repositoryId || !assetId || !fileName) return '';
 
@@ -556,7 +556,7 @@ export function resolveImageUrl(imageField, isAuthorEnv = false) {
     const repositoryId = (imageField.repositoryId || '').trim();
     const assetId = (imageField.assetId || '').trim();
     // const fileName = assetId.split('/').pop() || '';
-    const fileName = '/asset.png';
+    const fileName = 'asset.png';
 
     if (!repositoryId || !assetId || !fileName) return '';
 
