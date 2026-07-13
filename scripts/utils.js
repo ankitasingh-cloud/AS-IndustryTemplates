@@ -555,7 +555,8 @@ export function resolveImageUrl(imageField, isAuthorEnv = false) {
   if (imageField.repositoryId && imageField.assetId) {
     const repositoryId = (imageField.repositoryId || '').trim();
     const assetId = (imageField.assetId || '').trim();
-    const fileName = assetId.split('/').pop() || '';
+    // const fileName = assetId.split('/').pop() || '';
+    const fileName = '/asset.png';
 
     if (!repositoryId || !assetId || !fileName) return '';
 
