@@ -529,8 +529,7 @@ export function resolveImageUrl(imageField, isAuthorEnv = false) {
     case 'RemoteRef': {
       const repositoryId = (imageField.repositoryId || '').trim();
       const assetId = (imageField.assetId || '').trim();
-      // const fileName = assetId.split('/').pop() || '';
-      const fileName = '/asset.png';
+      const fileName = '/remoteRefAsset.png';
 
       if (!repositoryId || !assetId || !fileName) return '';
 
