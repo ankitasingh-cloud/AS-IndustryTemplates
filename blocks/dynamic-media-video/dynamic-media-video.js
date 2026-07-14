@@ -5,17 +5,16 @@ let dmViewerPromise;
  * @param {Element} block The block root element.
  */
 export default async function decorate(block) {
- 
   if (!window.dmviewers || !window.dmviewers.VideoViewer) {
     console.error('DM VideoViewer not available on window.dmviewers');
     return;
   }
 
   const videolinks = block.querySelectorAll('a[href]');
-  //https://delivery-p153659-e1620914.adobeaemcloud.com/adobe/assets/urn:aaid:aem:20bd71c3-a5a1-4b9e-833e-42e5cd028c3c/renditions/original/as/SampleVideo1mb.mp4?assetname=SampleVideo1mb.mp4
+  // https://delivery-p153659-e1620914.adobeaemcloud.com/adobe/assets/urn:aaid:aem:20bd71c3-a5a1-4b9e-833e-42e5cd028c3c/renditions/original/as/SampleVideo1mb.mp4?assetname=SampleVideo1mb.mp4
 
-  if(videolinks.length != 0){
-    let videoUrl = videolinks[0].href;
+  if (videolinks.length != 0) {
+    const videoUrl = videolinks[0].href;
 
     const urnPattern = /(\/adobe\/assets\/urn:[^\/]+)/i;
     const match = videoUrl.match(urnPattern);
@@ -29,7 +28,8 @@ export default async function decorate(block) {
     const videoURLObj = new URL(videoUrl);
     const baseUrl = `${videoURLObj.protocol}//${videoURLObj.hostname}`;
 
-    // Extract the asset ID path (e.g., /adobe/assets/urn:aaid:aem:20bd71c3-a5a1-4b9e-833e-42e5cd028c3c)
+    // Extract the asset ID path (e.g., /adobe/assets
+    // /urn:aaid:aem:20bd71c3-a5a1-4b9e-833e-42e5cd028c3c)
     const assetIdPath = match[1];
 
     // Construct the URLs
@@ -38,10 +38,8 @@ export default async function decorate(block) {
     const hlsUrl = `${baseUrl}${assetIdPath}/manifest.m3u8`;
 
     // Create a container for the DM viewer
-   // const playerContainer = block.querySelector('.dynamic-media-video');
+    // const playerContainer = block.querySelector('.dynamic-media-video');
 
-
-    
     block.id = `dm-video-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
 
     const params = {
@@ -52,40 +50,26 @@ export default async function decorate(block) {
     if (dashUrl) params.sources.DASH = dashUrl;
     if (hlsUrl) params.sources.HLS = hlsUrl;
 
-    let autoplay = '';
-	  let loop = '';
-	  let muted = '';
-	  let showControls = '';
-
-    const siblings = [];
-    let current = block.nextElementSibling;
-
-    // Collect up to 4 siblings (preset, rotate, flip, crop) in order
-    while (current && siblings.length < 7) {
-      siblings.push(current);
-      current = current.nextElementSibling;
-    }
-
-    // Helper to safely consume a sibling element's trimmed text and remove it
-    const consumeSiblingText = (el) => {
-      if (!el) return '';
-      const text = el.textContent?.trim() || '';
-      if (text) el.remove();
-      return text;
+    const children = Array.from(block.children);
+    const getTextFromChild = (index) => {
+      const childDiv = children[index];
+      if (!childDiv) return '';
+      const pElement = childDiv.querySelector('p');
+      return pElement?.textContent?.trim() || '';
     };
 
-    // Order matters: preset, rotate, flip, crop
-    if (siblings.length > 0) {
-      autoplay = consumeSiblingText(siblings.shift()) || false;
-      loop = consumeSiblingText(siblings.shift());
-      muted = consumeSiblingText(siblings.shift());
-      showControls = consumeSiblingText(siblings.shift());
+    const enableSmartCrop = getTextFromChild(1)?.toLowerCase() === 'true';
+    if (enableSmartCrop) {
+      params.mode = 'smartcrop';
     }
-		
+
+    const autoplay = getTextFromChild(2)?.toLowerCase() === 'true';
+    const loop = getTextFromChild(3)?.toLowerCase() === 'true';
+    const muted = getTextFromChild(4)?.toLowerCase() === 'true';
 
     Array.from(block.children).forEach((child) => {
-				child.style.display = 'none';
-		});
+      child.style.display = 'none';
+    });
 
     if (autoplay) {
       params.autoplay = '1';
@@ -94,13 +78,15 @@ export default async function decorate(block) {
       params.loop = '1';
     }
     if (muted) {
-      params.muted = '1';  // or params.playback = 'muted';
+      params.muted = '1'; // or params.playback = 'muted';
     }
 
     // Controls behavior depends on the viewer version; simplest pattern:
+    /*
     if (!showControls) {
       params.hidecontrolbar = '1';
     }
+    */
 
     // Instantiate viewer
     const s7videoviewer = new window.dmviewers.VideoViewer({
@@ -108,8 +94,8 @@ export default async function decorate(block) {
       params,
     });
     s7videoviewer.init();
-  } else{
-     Array.from(block.children).forEach((child) => {
+  } else {
+    Array.from(block.children).forEach((child) => {
       child.style.display = 'none';
     });
   }
