@@ -131,12 +131,29 @@
           "condition": { "==": [{ "var": "dataSourceType" }, "content-fragments"] }
         },
         {
-          "component": "text",
+          "component": "select",
+          "name": "ctastyle",
+          "label": "CTA Style",
           "valueType": "string",
-          "name": "ctaButtonLabel",
-          "label": "CTA Button Label",
-          "value": "Learn More",
-          "description": "Default label for the card action button"
+          "value": "button",
+          "options": [
+            {
+              "name": "Primary Button",
+              "value": "button"
+            },
+            {
+              "name": "Secondary Button",
+              "value": "button-secondary"
+            },
+            {
+              "name": "Dark Button",
+              "value": "button-dark"
+            },
+            {
+              "name": "Link",
+              "value": "link"
+            }
+          ]
         },
         {
           "component": "text",

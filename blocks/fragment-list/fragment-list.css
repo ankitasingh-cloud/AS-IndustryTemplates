@@ -151,6 +151,7 @@
   margin: 0;
 }
 
+/* Static CTA (no link) — base */
 .fragment-card-cta-static .button {
   display: inline-block;
   padding: 12px 24px;
@@ -159,6 +160,57 @@
   color: var(--text-color-secondary, #666);
   background: var(--background-color, #fff);
   cursor: default;
+}
+
+/* Static CTA — Primary variant */
+.fragment-card .cta-button.fragment-card-cta-static .button {
+  background-color: var(--main-accent-color);
+  color: var(--text-light, #fff);
+  border-color: var(--main-accent-color);
+}
+
+/* Static CTA — Secondary variant */
+.fragment-card .cta-button-secondary.fragment-card-cta-static .button {
+  background-color: transparent;
+  color: var(--main-accent-color);
+  border-color: var(--main-accent-color);
+}
+
+/* Static CTA — Dark variant */
+.fragment-card .cta-button-dark.fragment-card-cta-static .button {
+  background-color: var(--text-light, #fff);
+  color: var(--dark-color, #131313);
+  border-color: var(--dark-color, #131313);
+}
+
+/* Static CTA — Link variant */
+.fragment-card .cta-link.fragment-card-cta-static .button {
+  background: transparent;
+  border: none;
+  padding: 0;
+  color: var(--link-color, var(--main-accent-color));
+  cursor: default;
+}
+
+.fragment-card .cta-link.fragment-card-cta-static .button::after {
+  content: none;
+}
+
+/* CTA Link variant — inline link style within cards */
+.fragment-card .button-container.cta-link a.button {
+  background: transparent;
+  border: none;
+  padding: 0;
+  box-shadow: none;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.fragment-card .button-container.cta-link a.button:hover {
+  background: transparent;
+  color: var(--main-accent-color);
+  box-shadow: none;
+  transform: none;
 }
 
 /* No Results */

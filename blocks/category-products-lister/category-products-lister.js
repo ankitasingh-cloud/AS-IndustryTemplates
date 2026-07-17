@@ -1,7 +1,7 @@
 import { readBlockConfig, createLumaProductImagePicture } from "../../scripts/aem.js";
 import { isAuthorEnvironment, normalizeAemPath, normalizeCategoryValue } from "../../scripts/scripts.js";
 import { dispatchCustomEvent } from "../../scripts/custom-events.js";
-import { getEnvironmentValue, getHostname } from "../../scripts/utils.js";
+import { getEnvironmentValue, getHostname, resolveImageUrl } from "../../scripts/utils.js";
 
 const AUTHOR_PRODUCTS_ENDPOINT = "/graphql/execute.json/dsn-eds-configuration/productsListByPath;";
 const PUBLISH_GRAPHQL_PROXY_ENDPOINT = "https://275323-918sangriatortoise.adobeioruntime.net/api/v1/web/dx-excshell-1/fetch-product-information";
@@ -82,7 +82,7 @@ function buildCard(item, isAuthor, redirectUrl = "", enableAddToCart = false, ad
   }
 
   let picture = null;
-  if (damImageURL && (damImageURL._dynamicUrl || damImageURL._publishUrl || damImageURL._authorUrl)) {
+  if (resolveImageUrl(damImageURL, isAuthor)) {
     picture = createLumaProductImagePicture(damImageURL, name || "Product image", {
       isAuthor,
       eager: false,
@@ -113,7 +113,7 @@ function buildCard(item, isAuthor, redirectUrl = "", enableAddToCart = false, ad
     const formattedCategory = category
       .map((catValue) => normalizeCategoryValue(catValue).replace(/\//g, " / "))
       .join(", ");
-    const cartImageUrl = isAuthor ? damImageURL?._authorUrl : damImageURL?._publishUrl;
+    const cartImageUrl = resolveImageUrl(damImageURL, isAuthor);
 
     const addToCartBtn = document.createElement("button");
     addToCartBtn.className = "cpl-card-add-to-cart";
@@ -248,7 +248,7 @@ function renderCarousel(block, items, cfg, isAuthor, redirectUrl = "") {
     slide.className = "cpl-carousel-slide";
     if (i === 0) slide.classList.add("active");
 
-    if (damImageURL && (damImageURL._publishUrl || damImageURL._authorUrl || damImageURL._dynamicUrl)) {
+    if (resolveImageUrl(damImageURL, isAuthor)) {
       const picture = createLumaProductImagePicture(damImageURL, item.name || "Product image", {
         isAuthor,
         eager: i === 0,
